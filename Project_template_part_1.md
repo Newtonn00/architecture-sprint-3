@@ -141,7 +141,7 @@
 Контекстная диаграмма системы AS-IS состоит из 3-х блоков: Клиент компании, Система управления устройствами и внешняя платформа обмена данными с утройствами
 
 ```markdown
-[Контекстная диаграмма](./diagrams/context/WarmHome_C4_Context.puml)
+[Контекстная диаграмма](diagrams/context/WarmHome_C4_Context.puml)
 ```
 # Задание 2. Проектирование микросервисной архитектуры
 
@@ -150,25 +150,25 @@
 **Диаграмма контейнеров (Containers)**
 
 ```markdown
-[Контейнерная диаграмма](./diagrams/container/WarmHome_C4_Container.puml)
+[Контейнерная диаграмма](diagrams/container/WarmHome_C4_Container.puml)
 ```
 
 **Диаграмма компонентов (Components)**
 Для отрисовки Компонентной диаграммы выбран микросервис Order Service
 
 ```markdown
-[Компонентная диаграмма](./diagrams/component/WarmHome_C4_Component_OrderService.puml)
+[Компонентная диаграмма](diagrams/component/WarmHome_C4_Component_OrderService.puml)
 ```
 
 **Диаграмма кода (Code)**
 Для диаграммы Классов выбран компонент Order Processor. На диаграмме отражены основные классы компонента
 
 ```markdown
-[Диаграмма Классов](./diagrams/er/Warmhome_C4_Code_OrderService_OrderProcessor.puml)
+[Диаграмма Классов](diagrams/er/Warmhome_C4_Code_OrderService_OrderProcessor.puml)
 ```
 
 # Задание 3. Разработка ER-диаграммы
 
 ```markdown
-[ER-диаграмма](./diagrams/сщву/WarmHome_ER_Diagram.puml)
+[ER-диаграмма](diagrams/сщву/WarmHome_ER_Diagram.puml)
 ```
