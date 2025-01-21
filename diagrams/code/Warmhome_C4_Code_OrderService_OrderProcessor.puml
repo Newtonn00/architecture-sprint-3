@@ -1,0 +1,78 @@
+@startuml
+title Class Diagram: OrderProcessor
+
+
+    ' Основной класс OrderProcessor
+class OrderProcessor {
+    + processCreate(orderDto: OrderCreateDto): OrderEntity
+    + processUpdate(orderDto: OrderUpdateDto): OrderEntity
+    + processDelete(orderId: int): None
+    + processGet(orderId: int): OrderEntity
+}
+
+' Логирование
+class Logger {
+    + logInfo(message: String): None
+    + logError(message: String): None
+}
+
+
+' Бизнес-модель заказа
+class OrderEntity {
+    - id: int
+    - customerId: String
+    - devices: List<DeviceEntity>
+    - subscription: SubscriptionEntity
+    - totalAmount: float
+    - status: OrderStatus
+    + calculateTotal(): float
+}
+
+' Бизнес-модель устройства
+class DeviceEntity {
+    - id: String
+    - name: String
+    - model: String
+    - serialNumber: String
+    + calculateCost(): float
+}
+
+' Бизнес-модель подписки
+class SubscriptionEntity {
+    - id: String
+    - name: String
+    - price: float
+    - durationMonths: int
+    + calculateSubscriptionCost(): float
+}
+
+    ' История изменений заказов
+    class AuditLog {
+        - orderId: int
+        - action: String
+        - timestamp: datetime
+        - performedBy: String
+    }
+
+
+    ' Сервис уведомлений
+interface NotificationService {
+    + sendOrderConfirmation(orderId: int): None
+    + sendOrderCancellation(orderId: int): None
+}
+
+' Платёжный сервис
+interface PaymentService {
+    + processPayment(orderId: int, amount: float): bool
+}
+
+
+' Связи внутри OrderProcessor
+OrderProcessor --> OrderEntity : "manages"
+OrderProcessor --> Logger : "logs actions"
+OrderProcessor --> NotificationService : "notifies"
+OrderProcessor --> PaymentService : "handles payments"
+OrderEntity --> DeviceEntity : "contains multiple"
+OrderEntity --> SubscriptionEntity : "includes"
+OrderProcessor --> AuditLog : "writes logs"
+@enduml

@@ -1,0 +1,84 @@
+@startuml name=container duagram
+!include ../C4/C4_Container.puml
+
+AddElementTag("microService", $shape=EightSidedShape(), $bgColor="CornflowerBlue", $fontColor="white", $legendText="micro service\neight sided")
+AddElementTag("storage", $shape=RoundedBoxShape(), $bgColor="lightSkyBlue", $fontColor="white")
+
+SHOW_PERSON_OUTLINE()
+
+title C4 Container Diagram: Smart Home Information System
+
+Person(customer, "Customer", "A customer who uses the system")
+Container_Ext(webapp, "Web Application", "Frontend (Browser)")
+Container_Ext(mobileapp, "Mobile Application", "Mobile client (iOS/Android)")
+Container_Ext(payment_ext, "Payment Services", "External payment aggregators")
+Container_Ext(fi_ext, "Financial system", "External system for posting finnancial operations")
+Container_Ext(iot_platform, "IoT Platform", "External platform for device connectivity")
+Container_Ext(notification_ext, "Notification Services", "External email/SMS/push providers")
+
+
+System_Boundary(c1, "Smart Home Information System") {
+    Container(api_gateway, "API Gateway", "Kong", "Single entry point for all client requests")
+    ContainerQueue(message_bus, "Message Bus", "Kafka", "Transport for business and system events")
+
+    Container(auth_service, "Auth Service", "Java, Spring Boot", "Handles user authentication & authorization", $tags="microService")
+    Container(customer_profile_service, "Customer Profile Service", "Java, Spring Boot", "Manages customer profiles", $tags="microService")
+    Container(device_config_service, "Device Configuration Service", "Java, Spring Boot", "Manages device configurations", $tags="microService")
+    Container(device_service, "Device Interaction Service", "Java, Spring Boot", "Controls device actions and reads statuses", $tags="microService")
+    Container(order_service, "Order Service", "Java, Spring Boot", "Manages orders and related processes", $tags="microService")
+    Container(payment_service, "Payment Service", "Java, Spring Boot", "Handles payment flows via external aggregators", $tags="microService")
+    Container(monitoring_service, "Monitoring Service", "Java, Spring Boot", "Handles data and helps to find unhealthy devices", $tags="microService")
+    Container(notification_service, "Notification Service", "Java, Spring Boot", "Sends notifications via various channels", $tags="microService")
+
+    ContainerDb(customer_db, "Customer Database", "PostgreSQL", "Stores customer profiles and related data", $tags="storage")
+    ContainerDb(device_interaction_db, "Device Interaction DB", "MongoDB", "Stores device interaction data (telemetry, logs)", $tags="storage")
+    ContainerDb(device_config_db, "Device Config DB", "PostgreSQL", "Stores device configurations", $tags="storage")
+    ContainerDb(order_db, "Order Database", "PostgreSQL", "Stores order data", $tags="storage")
+    ContainerDb(notification_db, "Notification Database", "PostgreSQL", "Stores notification templates and logs", $tags="storage")
+    ContainerDb(payment_db, "Payment Database", "PostgreSQL", "Stores payment transactions", $tags="storage")
+    ContainerDb(monitoring_db, "Monitoring Database", "PostgreSQL", "Stores devices data for analize", $tags="storage")
+}
+
+Rel_D(customer, webapp, "Uses")
+Rel_D(customer, mobileapp, "Uses")
+
+Rel_D(webapp, api_gateway, "Calls API", "HTTPS")
+Rel_D(mobileapp, api_gateway, "Calls API", "HTTPS")
+
+Rel_U(api_gateway, webapp, "Pushes real-time updates", "WebSocket/SSE")
+Rel_U(api_gateway, mobileapp, "Pushes real-time updates", "WebSocket")
+
+Rel_L(api_gateway, auth_service, "Validates credentials & tokens")
+
+Rel_D(api_gateway, message_bus, "Publishes events")
+Rel_D(api_gateway, customer_profile_service, "Routes REST requests")
+Rel_D(api_gateway, device_config_service, "Routes REST requests")
+Rel_D(api_gateway, device_service, "Routes REST requests")
+Rel_D(api_gateway, payment_service, "Routes REST requests")
+Rel_D(api_gateway, order_service, "Routes REST requests")
+Rel_D(api_gateway, notification_service, "Routes REST requests")
+
+Rel(customer_profile_service, customer_db, "Reads/Writes", "JDBC")
+Rel(device_config_service, device_config_db, "Reads/Writes", "JDBC")
+Rel(device_service, device_interaction_db, "Reads/Writes", "MongoDB driver")
+Rel(order_service, order_db, "Reads/Writes", "JDBC")
+Rel(payment_service, payment_db, "Reads/Writes", "JDBC")
+Rel(notification_service, notification_db, "Reads/Writes", "JDBC")
+Rel(monitoring_service, monitoring_db, "Reads/Writes", "JDBC")
+
+Rel(order_service, message_bus, "Publishes/consumes events")
+Rel(device_service, message_bus, "Publishes/consumes events")
+Rel(payment_service, message_bus, "Publishes/consumes events")
+Rel(notification_service, message_bus, "Consumes events to trigger notifications")
+Rel(monitoring_service, message_bus, "Consumes events to trigger notifications")
+
+
+Rel_U(payment_service, payment_ext, "Processes payments")
+Rel_U(device_service, iot_platform, "Sends commands and retrieves device data")
+Rel_D(notification_service, notification_ext, "Delivers email/push/SMS")
+Rel_L(order_service, fi_ext, "Sends order information", "HTTPS")
+Rel_D(customer_profile_service, fi_ext, "Sends customer information")
+
+
+SHOW_LEGEND()
+@enduml
