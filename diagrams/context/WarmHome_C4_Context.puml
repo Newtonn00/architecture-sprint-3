@@ -1,0 +1,17 @@
+
+@startuml name=context duagram
+!include ../C4/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context diagram for Heating Management System
+
+Person(customer, "Teplaya Set`s Customer", "A customer of the Teplaya Set company who is registered in the company's system")
+
+System(devices_system, "Heating Management System", "Allows the customer to manage the heating devices and to get the current temperature")
+
+System_Ext(iot_system, "External IoT platform that handles device connectivity and data exchange")
+Rel(customer, devices_system, "Manages devices via web/mobile")
+
+Rel(devices_system, iot_system, "Sends commands and receives telemetry")
+@enduml

@@ -1,0 +1,121 @@
+@startuml
+title ER Diagram: Smart Home Ecosystem
+
+entity User {
+    * id : UUID <<PK>>
+    ---
+    name : String
+    email : String
+    phone : String
+    password_hash : String
+}
+
+entity Location {
+    * id : UUID <<PK>>
+    ---
+    name : String
+    address : String
+    user_id : UUID <<FK>>
+}
+
+entity Device {
+    * id : UUID <<PK>>
+    ---
+    serial_number : String
+    type_id : UUID <<FK>>
+    status : String
+}
+
+entity DeviceType {
+    * id : UUID <<PK>>
+    ---
+    name : String
+    description : String
+}
+
+entity Module {
+    * id : UUID <<PK>>
+    ---
+    device_id : UUID <<FK>>
+    configuration_id : UUID <<FK>>
+    location_id : UUID <<FK>>
+    user_id : UUID <<FK>>
+    name : String
+    status : String
+}
+
+entity TelemetryData {
+    * id : UUID <<PK>>
+    ---
+    device_id : UUID <<FK>>
+    timestamp : DateTime
+    data : JSON
+}
+
+entity OrderData {
+
+    * id : UUID <<PK>>
+    ---
+    user_id : UUID <<FK>>
+    subscription_id : UUID <<FK>>
+    payment_term : String
+    status: String
+    timestamp : DateTime
+    amount : Decimal
+}
+
+entity OrderItemData {
+
+    * id : UUID <<PK>>
+    ---
+    order_id : UUID <<FK>>
+    device_id : UUID <<FK>>
+    timestamp : DateTime
+    amount : Decimal
+}
+
+entity PaymentData {
+    * id : UUID <<PK>>
+    ---
+    order_id : UUID <<FK>>
+    timestamp : DateTime
+    amount : Decimal
+    currency_code : String
+
+}
+
+entity Subscription {
+
+    * id : UUID <<PK>>
+    ---
+    order_id : UUID <<FK>>
+    status : String
+    payment_term : String
+    timestamp: DateTime    
+
+}
+
+entity DeviceConfiguration {
+    * id : UUID <<PK>>
+    ---
+    description : String
+    type: String
+    data: JSON
+}
+
+
+' Связи
+User ||--o{ Location : "owns"
+User ||--o{ OrderData : "creates"
+Location ||--o{ Module : "contains"
+Device }o--|| DeviceType : "has type"
+Device ||--o{ TelemetryData : "generates"
+Device ||--{ Module : "has"
+
+Module ||--{ DeviceConfiguration : "has"
+OrderData ||--o{ OrderItemData : "creates items"
+OrderData ||--o{ PaymentData : "has"
+OrderData ||--|| Subscription : "has"
+
+OrderItemData ||--|| Device : "has" 
+@enduml

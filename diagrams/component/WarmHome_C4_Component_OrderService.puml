@@ -1,0 +1,31 @@
+@startuml name=component diagramm
+!include ../C4/C4_Component.puml
+
+title title Component Diagram: Order Service Container
+
+Container_Boundary(c1, "Order Service") {
+    Component(order_controller, "Order Controller", "Handles incoming HTTP requests")
+    Component(order_processor, "Order Processor", "Business logic for order management")
+    Component(payment_integrator, "Payment Integrator", "Communicates with Payment Service")
+    Component(order_repository, "Order Repository", "Accesses Order Database")
+    Component(event_publisher, "Event Publisher", "Publishes order events to Message Bus")
+    Component(order_integrator, "Order Integrator", "Integrates with external systems")
+}
+
+Container(api_gateway, "API Gateway", "Kong", "Single entry point for all client requests")
+ContainerDb(order_db, "Order Database", "PostgreSQL", "Stores order data")
+ContainerQueue(message_bus, "Message Bus", "Kafka", "Transports events between services")
+Container_Ext(payment_service, "Payment Service", "External Service", "Processes payments")
+Container_Ext(fi_ext, "Financial system", "External system for posting finnancial operations")
+
+Rel(api_gateway, order_controller, "HTTPs")
+Rel(order_controller, order_processor, "Handles requests")
+Rel(order_processor, order_repository, "Reads/Writes order data", "JDBC")
+Rel(order_processor, payment_integrator, "Processes payments")
+Rel(payment_integrator, payment_service, "Calls payment API")
+Rel(order_processor, event_publisher, "Publishes events")
+Rel(order_processor, order_integrator, "Processes transfer data to ext. system")
+Rel(event_publisher, message_bus, "Sends events")
+Rel(order_repository, order_db, "Reads/Writes data")
+Rel(order_integrator, fi_ext, "HTTPS")
+@enduml
