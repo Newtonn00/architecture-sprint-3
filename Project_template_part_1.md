@@ -158,8 +158,8 @@
 **Диаграмма кода (Code)**
 Для диаграммы Классов выбран компонент Order Processor. На диаграмме отражены основные классы компонента
 
-[Диаграмма Классов](diagrams/er/Warmhome_C4_Code_OrderService_OrderProcessor.puml)
+[Диаграмма Классов](diagrams/code/Warmhome_C4_Code_OrderService_OrderProcessor.puml)
 
 # Задание 3. Разработка ER-диаграммы
 
-[ER-диаграмма](diagrams/сщву/WarmHome_ER_Diagram.puml)
+[ER-диаграмма](diagrams/er/WarmHome_ER_Diagram.puml)
